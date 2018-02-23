@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <style>
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+</style>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    </head>
+    <body onload="setInterval('getmessages()',5000)" >
+        <script src=http://code.jquery.com/jquery-latest.min.js></script>
+        <script>
+            
+            $(document).ready(function(){
+             $('#submit').click(function (){
+               var message=$("#message").val(); 
+               var jsonobj={"message":message}; 
+               $.ajax({ url:'myserverServlet',
+                   type: 'get',
+                   contentType: 'application/json',
+                   data:jsonobj,
+                   dataType: 'json',
+                   success: function (data) {     
+                 //alert("the message success");                  
+               }
+                   
+               });
+             });     
+            });
+           
+            function getmessages()
+            { 
+               $.ajax({ url:'myserverServlet',
+                   type: 'POST',
+                   contentType: 'application/json',
+                   dataType: 'json',
+                   success: function (data) {  
+                     refreshMessages(data);         
+               }
+                   
+               });
+               $.ajax({ url:'UsercheckServlet',
+                   type: 'POST',
+                   contentType: 'application/json',
+                   dataType: 'json',
+                   success: function (data) {  
+                     refreshUsers(data);         
+                 }
+                   
+               });
+            }
+            
+            function refreshMessages(val) {
+    var messages = val;
+   
+    $("#mytable tr").remove();
+     $('#mytable').append('<tr><th>Name</th><th>Message</th></tr>');
+    for (var i = 0; i < val.length; i++) {
+        $('#mytable').append('<tr><td>' + messages[i].sender + '</td><td>' + messages[i].message + '</td > </tr>');
+    }
+            }
+            function refreshUsers(val) {
+    var Users = val;
+    $("#users tr").remove();
+    $('#users').append('<tr><th>user</th><th>Status</th></tr>');
+    for (var i = 0; i < val.length; i++) {
+        $('#users').append('<tr><td>' + Users[i].UserName + '</td><td>' + Users[i].Status + '</td > </tr>');
+    }
+            }
+        </script>
+        <center>
+            <label> Message: </label> <input type="text" id="message">
+            <br>
+            <br>
+            <INPUT type="button" VALUE="Submit" id="submit">
+        <table id="mytable">
+  
+</table>
+            <center> <h1>Users</h1></center>
+            <table id="users">
+  
+</table>
+            <div id="x"> </div>
+    </CENTER>
+
+    </body>
+</html>
+
